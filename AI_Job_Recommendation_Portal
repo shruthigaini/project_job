@@ -1,1 +1,59 @@
+import streamlit as st
+from langchain_ollama import OllamaLLM
 
+# Connect to Llama 3.2
+llm = OllamaLLM(model="llama3.2")
+
+# Page settings
+st.set_page_config(
+    page_title="AI Job Recommendation Portal",
+    page_icon="💼"
+)
+
+# Title
+st.title("💼 AI Job Recommendation Portal")
+st.write("Find suitable job roles based on your skills, education and interests.")
+
+# User details
+name = st.text_input("Enter your name")
+
+education = st.text_input("Enter your education")
+
+skills = st.text_area("Enter your skills")
+
+interests = st.text_area("Enter your interests")
+
+experience = st.text_area("Enter your projects or experience")
+
+# Recommendation button
+if st.button("🎯 Recommend Jobs"):
+
+    if not skills or not education:
+        st.warning("Please enter your education and skills.")
+
+    else:
+        prompt = f"""
+You are an AI career advisor.
+
+Candidate name: {name}
+Education: {education}
+Skills: {skills}
+Interests: {interests}
+Projects or experience: {experience}
+
+Recommend 5 suitable job roles for this candidate.
+
+For each job role give:
+1. Job title
+2. Why it matches the candidate
+3. Important skills required
+4. One improvement suggestion
+
+Keep the answer simple and easy to understand.
+"""
+
+        with st.spinner("🤖 AI is analyzing your profile..."):
+            response = llm.invoke(prompt)
+
+        st.subheader("🎯 Recommended Jobs")
+        st.write(response)
